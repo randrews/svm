@@ -39,6 +39,14 @@ describe "SVM::Function" do
     function("loop1").apply(:times=>-1).should==0
   end
 
+  it "should read a function that takes an array" do
+    lambda{ function("average") }.should_not raise_error
+  end
+
+  it "should apply a function that takes an array" do
+    function("average").apply(:values=>[25, 7, 8, 6, 4]).should==10
+  end
+
   def function name
     SVM::Function.new name, @fn[name]
   end

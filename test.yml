@@ -38,3 +38,34 @@ loop1:
     - ["jmp", 2]
     - ["var", "total"]
     - return
+
+average:
+  params:
+    values: array
+  vars:
+    total: number
+    index: number
+  return: number
+  code:
+    - ["push", 0]
+    - dup
+    - ["store", "total"]
+    - ["store", "index"]
+    - ["var", "index"]
+    - ["var", "values"]
+    - size
+    - ["jmp>", 13]
+    - ["var", "total"]
+    - ["var", "values"]
+    - size
+    - div
+    - return
+    - ["var", "total"]
+    - ["var", "values"]
+    - ["var", "index"]
+    - lookup
+    - add
+    - ["store", "total"]
+    - ["var", "index"]
+    - inc
+    - ["jmp", 3]
