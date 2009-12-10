@@ -11,7 +11,7 @@ describe "SVM::Function" do
     func = function "test1"
     func.name.should=="test1"
     func.return_type.should==:number
-    func.params.should=={"x"=>:number}
+    func.params.should=={:x=>:number}
   end
 
   it "should evaluate a function" do
@@ -22,6 +22,16 @@ describe "SVM::Function" do
   it "should detect errors in params" do
     func = function "test1"
     lambda{ func.apply(:x=>"foo") }.should raise_error SVM::Error
+  end
+
+  it "should recognize missing parameters"
+  it "should recognize extra parameters"
+
+  it "should eval the loop test" do
+    function("loop1").apply(:times=>4).should==10
+    function("loop1").apply(:times=>1).should==1
+    function("loop1").apply(:times=>0).should==0
+    function("loop1").apply(:times=>-1).should==0
   end
 
   def function name

@@ -15,5 +15,26 @@ test1:
     - ["push", 3]
     - add
     - return
-    # This "return" takes the top of the stack and puts it into the return register
-    # It doesn't actually make the function exit
+
+loop1:
+  params:
+    times: number
+  vars:
+    total: number
+  return: number
+  code:
+    - ["push", 0]
+    - ["store", "total"]
+    - ["push", 1]
+    - ["var", "times"]
+    - ["jmp<", 13]
+    - ["var", "times"]
+    - ["var", "total"]
+    - add
+    - ["store", "total"]
+    - ["var", "times"]
+    - dec
+    - ["store", "times"]
+    - ["jmp", 2]
+    - ["var", "total"]
+    - return
