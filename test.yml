@@ -1,0 +1,19 @@
+# Declare a function called test1
+test1:
+  # Has a list of params, and their types
+  params:
+    # param called x
+    x: number
+  # Returns a number
+  return: number
+  # The code of the function, start index at 0
+  code:
+    # var looks up the variable from the known symbols and pushes it
+    - ["var", "x"]
+    - ["push", 2]
+    - mul
+    - ["push", 3]
+    - add
+    - return
+    # This "return" takes the top of the stack and puts it into the return register
+    # It doesn't actually make the function exit
