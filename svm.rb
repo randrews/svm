@@ -133,12 +133,23 @@ module SVM
           check_array a
           stack.push a.size
 
+          when :new_array
+          stack.push []
+
           when :lookup
           a = stack.pop
           b = stack.pop
           check_array b
           check_numeric a
           stack.push b[a]
+
+          when :array_set
+          v = stack.pop
+          i = stack.pop
+          a = stack.pop
+          check_numeric i
+          check_array a
+          a[i]=v
 
           else
           check false, "Invalid opcode: #{op.inspect}"

@@ -69,3 +69,33 @@ average:
     - ["var", "index"]
     - inc
     - ["jmp", 3]
+
+range:
+  params:
+    min: number
+    max: number
+  vars:
+    r: array
+    index: number
+  return: array
+  code:
+    - ["push", 0]
+    - ["store", "index"]
+    - new_array
+    - ["store", "r"]
+    - ["var", "min"]
+    - ["var", "max"]
+    - ["jmp>", 9]
+    - ["var", "r"]
+    - return
+    - ["var", "r"]
+    - ["var", "index"]
+    - ["var", "min"]
+    - array_set
+    - ["var", "min"]
+    - inc
+    - ["store", "min"]
+    - ["var", "index"]
+    - inc
+    - ["store", "index"]
+    - ["jmp", 4]

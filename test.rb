@@ -47,6 +47,10 @@ describe "SVM::Function" do
     function("average").apply(:values=>[25, 7, 8, 6, 4]).should==10
   end
 
+  it "should apply a function that returns an array" do
+    function("range").apply(:min=>0, :max=>5).should==[0,1,2,3,4]
+  end
+
   def function name
     SVM::Function.new name, @fn[name]
   end
