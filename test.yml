@@ -99,3 +99,55 @@ range:
     - inc
     - ["store", "index"]
     - ["jmp", 4]
+
+even_odd:
+  params:
+    values: array
+  vars:
+    bins: hash
+    index: number
+  return: hash
+  code:
+    - ["push", 0]
+    - ["store", "index"]
+    - new_hash
+    - ["store", "bins"]
+    - ["var", "bins"]
+    - dup
+    - ["push", "even"]
+    - new_array
+    - hash_set
+    - ["push", "odd"]
+    - new_array
+    - hash_set
+
+    # Beginning of loop, 12
+    - ["var", "values"]
+    - size
+    - ["var", "index"]
+    - ["jmp<", 18]
+    - ["var", "bins"]
+    - return
+
+    # Loop body, 18
+    - ["var", "bins"]
+    - ["var", "values"]
+    - ["var", "index"]
+    - lookup
+    - ["push", 2]
+    - mod
+    - ["jmpz", 27]
+    - ["push", "odd"]
+    - ["jmp", 28]
+    - ["push", "even"]
+    - get
+    - ["var", "values"]
+    - ["var", "index"]
+    - lookup
+    - array_append
+
+    # Loop tail, 33
+    - ["var", "index"]
+    - inc
+    - ["store", "index"]
+    - ["jmp", 12]

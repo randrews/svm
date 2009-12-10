@@ -51,6 +51,11 @@ describe "SVM::Function" do
     function("range").apply(:min=>0, :max=>5).should==[0,1,2,3,4]
   end
 
+  it "should apply a function that uses hashes" do
+    function("even_odd").apply(:values=>[1,2,3,4,5]).should=={"even"=>[2, 4], "odd"=>[1, 3, 5]}
+    function("even_odd").apply(:values=>[2,2,2,3,5]).should=={"even"=>[2, 2, 2], "odd"=>[3, 5]}
+  end
+
   def function name
     SVM::Function.new name, @fn[name]
   end

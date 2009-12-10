@@ -58,6 +58,12 @@ module SVM
           check_numeric a, b
           stack.push a+b
 
+          when :sub
+          a = stack.pop
+          b = stack.pop
+          check_numeric a, b
+          stack.push b-a
+
           when :mul
           a = stack.pop
           b = stack.pop
@@ -69,6 +75,12 @@ module SVM
           b = stack.pop
           check_numeric a, b
           stack.push b/a
+
+          when :mod
+          a = stack.pop
+          b = stack.pop
+          check_numeric a, b
+          stack.push b%a
 
           when :store
           a = stack.pop
@@ -113,6 +125,14 @@ module SVM
             pc = op[1]
           end
 
+          when :jmpz
+          a = stack.pop
+          check_numeric a, op[1]
+          if a==0
+            inc = false
+            pc = op[1]
+          end
+
           when :jmp
           check_numeric op[1]
           inc = false
@@ -151,6 +171,28 @@ module SVM
           check_array a
           a[i]=v
 
+          when :array_append
+          v = stack.pop
+          a = stack.pop
+          check_array a
+          a << v
+
+          when :new_hash
+          stack.push Hash.new
+
+          when :hash_set
+          v = stack.pop
+          k = stack.pop
+          h = stack.pop
+          check_hash h
+          h[k]=v
+
+          when :get
+          k = stack.pop
+          h = stack.pop
+          check_hash h
+          stack.push h[k]
+
           else
           check false, "Invalid opcode: #{op.inspect}"
         end
@@ -181,6 +223,7 @@ module SVM
               when :number: Numeric
               when :string: String
               when :array: Array
+              when :hash: Hash
               end
       check((value.nil? or value.is_a?(klass)), "Expected a #{type} for #{name}, got #{value.inspect}")
     end
@@ -193,7 +236,13 @@ module SVM
 
     def check_array *values
       values.each do |v|
-        check(v.is_a?(Array), "Expected a numeric value, got #{v.inspect}")
+        check(v.is_a?(Array), "Expected an array, got #{v.inspect}")
+      end
+    end
+
+    def check_hash *values
+      values.each do |v|
+        check(v.is_a?(Hash), "Expected a hash, got #{v.inspect}")
       end
     end
 
