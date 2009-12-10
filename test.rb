@@ -121,6 +121,39 @@ describe "SVM::Function" do
     lambda { b.code }.should raise_error SVM::Error
   end
 
+  it "should let me create a function" do
+    b = SVM::Builder.new("square")
+    b.param :x, :number
+    b.return_type = :number
+
+    b.load :x
+    b.dup
+    b.mul
+    b.return
+
+    b.function.class.should==SVM::Function
+  end
+
+  it "should let me create a function that runs" do
+    b = SVM::Builder.new("square")
+    b.param :x, :number
+    b.return_type = :number
+
+    b.load :x
+    b.dup
+    b.mul
+    b.return
+
+    b.function.apply(:x=>5).should==25
+  end
+
+  it "should fail to create incomplete functions" do
+    b = SVM::Builder.new("square")
+
+    # Error because of no return type
+    lambda{ b.function }.should raise_error SVM::Error
+  end
+
   def function name
     SVM::Function.new name, @fn[name]
   end

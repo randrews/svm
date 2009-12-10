@@ -322,6 +322,10 @@ module SVM
       @code
     end
 
+    def function
+      Function.new name, :return=>return_type, :params=>params, :vars=>vars, :code=>code
+    end
+
     ##################################################
 
     # No-argument opcodes
