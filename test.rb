@@ -24,8 +24,13 @@ describe "SVM::Function" do
     lambda{ func.apply(:x=>"foo") }.should raise_error SVM::Error
   end
 
-  it "should recognize missing parameters"
-  it "should recognize extra parameters"
+  it "should recognize missing parameters" do
+    lambda{ function("loop1").apply() }.should raise_error SVM::Error
+  end
+
+  it "should recognize extra parameters" do
+    lambda{ function("loop1").apply(:foo=>"bar") }.should raise_error SVM::Error
+  end
 
   it "should eval the loop test" do
     function("loop1").apply(:times=>4).should==10

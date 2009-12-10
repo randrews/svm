@@ -10,7 +10,7 @@ module SVM
       @code = opts[:code].map{|op| (op.is_a?(Array) ? (op[0] = op.first.to_sym) : (op = op.to_sym)) ; op } 
       @return_type = opts[:return].to_sym
 
-      @params = {} ; opts[:params].each{|k,v| @params[k.to_sym] = v.to_sym}
+      @params = {} ; opts[:params].each{|k,v| @params[k.to_sym] = v.to_sym} if opts[:params]
       @vars = {} ; opts[:vars].each{|k,v| @vars[k.to_sym] = v.to_sym} if opts[:vars]
 
       check (@params.keys & @vars.keys).empty?, "Variables declared with the same names as parameters: #{(@params.keys & @vars.keys).inspect}"
@@ -18,7 +18,7 @@ module SVM
       @name = name
     end
 
-    def apply args
+    def apply args={}
       check_params args
       locals = {} ; @vars.keys.each{|k| locals[k]=nil}
       locals = locals.merge args
@@ -95,6 +95,9 @@ module SVM
     end
 
     def check_params args
+      check((params.keys - args.keys).empty?, "Missing parameters: #{(params.keys - args.keys).inspect}")
+      check((args.keys - params.keys).empty?, "Unexpected parameters: #{(args.keys - params.keys).inspect}")
+
       params.each do |name, type|
         check_type args[name], type, name
       end
