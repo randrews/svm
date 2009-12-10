@@ -56,6 +56,71 @@ describe "SVM::Function" do
     function("even_odd").apply(:values=>[2,2,2,3,5]).should=={"even"=>[2, 2, 2], "odd"=>[3, 5]}
   end
 
+  it "should let me build a function with the builder" do
+    b = SVM::Builder.new("foo")
+    b.add
+    b.add
+    b.return
+
+    b.code.should==[:add, :add, :return]
+    b.name.should=="foo"
+  end
+
+  it "should let me build a function with parameter opcodes" do
+    b = SVM::Builder.new("foo")
+    b.param :x, :number
+    b.var :y, :number
+
+    b.load :x
+    b.inc
+    b.store :y
+
+    b.code.should==[ [:load, :x], :inc, [:store, :y] ]
+    b.vars.should=={:y=>:number}
+    b.params.should=={:x=>:number}
+  end
+
+  it "should accept labels" do
+    b = SVM::Builder.new("foo")
+    b[:start].push 0
+
+    b.labels.should=={:start=>0}
+  end
+
+  it "should accept constant jumps" do
+    b = SVM::Builder.new("foo")
+    b.push 0
+    b.jmp 0
+
+    b.code.should==[[:push, 0], [:jmp, 0]]
+  end
+
+  it "should accept jumps to backward references" do
+    b = SVM::Builder.new("foo")
+    b.push 0
+    b[:start].inc
+    b.jmp :start
+
+    b.code.should==[[:push, 0], :inc, [:jmp, 1]]
+  end
+
+  it "should accept jumps to forward references" do
+    b = SVM::Builder.new("foo")
+    b.jmp :end
+    b.inc
+    b[:end].return
+
+    b.code.should==[[:jmp, 2], :inc, :return]
+  end
+
+  it "should raise an error with an undefined forward reference" do
+    b = SVM::Builder.new("foo")
+    b.jmp :nowhere
+    b.return
+
+    lambda { b.code }.should raise_error SVM::Error
+  end
+
   def function name
     SVM::Function.new name, @fn[name]
   end
