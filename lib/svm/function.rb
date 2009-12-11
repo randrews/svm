@@ -121,10 +121,36 @@ class SVM::Function
           pc = op[1]
         end
 
+      when :jmpeq
+        a = stack.pop
+        b = stack.pop
+        check_numeric a, b, op[1]
+        if a==b
+          inc = false
+          pc = op[1]
+        end
+
+      when :jmpne
+        a = stack.pop
+        b = stack.pop
+        check_numeric a, b, op[1]
+        if a!=b
+          inc = false
+          pc = op[1]
+        end
+
       when :jmpz
         a = stack.pop
         check_numeric a, op[1]
         if a==0
+          inc = false
+          pc = op[1]
+        end
+
+      when :jmpnz
+        a = stack.pop
+        check_numeric a, op[1]
+        if a!=0
           inc = false
           pc = op[1]
         end
@@ -149,17 +175,17 @@ class SVM::Function
         check_array a
         stack.push a.size
 
-      when :new_array
+      when :anew
         stack.push []
 
-      when :lookup
+      when :aget
         a = stack.pop
         b = stack.pop
         check_array b
         check_numeric a
         stack.push b[a]
 
-      when :array_set
+      when :aset
         v = stack.pop
         i = stack.pop
         a = stack.pop
@@ -167,23 +193,23 @@ class SVM::Function
         check_array a
         a[i]=v
 
-      when :array_append
+      when :apush
         v = stack.pop
         a = stack.pop
         check_array a
         a << v
 
-      when :new_hash
+      when :hnew
         stack.push Hash.new
 
-      when :hash_set
+      when :hset
         v = stack.pop
         k = stack.pop
         h = stack.pop
         check_hash h
         h[k]=v
 
-      when :get
+      when :hget
         k = stack.pop
         h = stack.pop
         check_hash h

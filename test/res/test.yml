@@ -63,7 +63,7 @@ average:
     - ["load", "total"]
     - ["load", "values"]
     - ["load", "index"]
-    - lookup
+    - aget
     - add
     - ["store", "total"]
     - ["load", "index"]
@@ -81,7 +81,7 @@ range:
   code:
     - ["push", 0]
     - ["store", "index"]
-    - new_array
+    - anew
     - ["store", "r"]
     - ["load", "min"]
     - ["load", "max"]
@@ -91,7 +91,7 @@ range:
     - ["load", "r"]
     - ["load", "index"]
     - ["load", "min"]
-    - array_set
+    - aset
     - ["load", "min"]
     - inc
     - ["store", "min"]
@@ -110,16 +110,16 @@ even_odd:
   code:
     - ["push", 0]
     - ["store", "index"]
-    - new_hash
+    - hnew
     - ["store", "bins"]
     - ["load", "bins"]
     - dup
     - ["push", "even"]
-    - new_array
-    - hash_set
+    - anew
+    - hset
     - ["push", "odd"]
-    - new_array
-    - hash_set
+    - anew
+    - hset
 
     # Beginning of loop, 12
     - ["load", "values"]
@@ -133,18 +133,18 @@ even_odd:
     - ["load", "bins"]
     - ["load", "values"]
     - ["load", "index"]
-    - lookup
+    - aget
     - ["push", 2]
     - mod
     - ["jmpz", 27]
     - ["push", "odd"]
     - ["jmp", 28]
     - ["push", "even"]
-    - get
+    - hget
     - ["load", "values"]
     - ["load", "index"]
-    - lookup
-    - array_append
+    - aget
+    - apush
 
     # Loop tail, 33
     - ["load", "index"]

@@ -144,7 +144,7 @@ Jump to the given address if the conditions match. Conditions only work on numer
 * *jmpgt*(address) [y:number x:number]: Pop x and y, jump if x > y
 * *jmple*(address) [y:number x:number]: Pop x and y, jump if x <= y
 * *jmpge*(address) [y:number x:number]: Pop x and y, jump if x >= y
-* *jmpe*(address) [y:number x:number]: Pop x and y, jump if x == y
+* *jmpeq*(address) [y:number x:number]: Pop x and y, jump if x == y
 * *jmpne*(address) [y:number x:number]: Pop x and y, jump if x != y
 * *jmpz*(address) [x:number]: Pop x, jump if x == 0
 * *jmpnz*(address) [x:number]: Pop x, jump if x != 0
