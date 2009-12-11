@@ -1,0 +1,153 @@
+# Declare a function called test1
+test1:
+  # Has a list of params, and their types
+  params:
+    # param called x
+    x: number
+  # Returns a number
+  return: number
+  # The code of the function, start index at 0
+  code:
+    # var looks up the variable from the known symbols and pushes it
+    - ["load", "x"]
+    - ["push", 2]
+    - mul
+    - ["push", 3]
+    - add
+    - return
+
+loop1:
+  params:
+    times: number
+  vars:
+    total: number
+  return: number
+  code:
+    - ["push", 0]
+    - ["store", "total"]
+    - ["push", 1]
+    - ["load", "times"]
+    - ["jmplt", 13]
+    - ["load", "times"]
+    - ["load", "total"]
+    - add
+    - ["store", "total"]
+    - ["load", "times"]
+    - dec
+    - ["store", "times"]
+    - ["jmp", 2]
+    - ["load", "total"]
+    - return
+
+average:
+  params:
+    values: array
+  vars:
+    total: number
+    index: number
+  return: number
+  code:
+    - ["push", 0]
+    - dup
+    - ["store", "total"]
+    - ["store", "index"]
+    - ["load", "index"]
+    - ["load", "values"]
+    - size
+    - ["jmpgt", 13]
+    - ["load", "total"]
+    - ["load", "values"]
+    - size
+    - div
+    - return
+    - ["load", "total"]
+    - ["load", "values"]
+    - ["load", "index"]
+    - lookup
+    - add
+    - ["store", "total"]
+    - ["load", "index"]
+    - inc
+    - ["jmp", 3]
+
+range:
+  params:
+    min: number
+    max: number
+  vars:
+    r: array
+    index: number
+  return: array
+  code:
+    - ["push", 0]
+    - ["store", "index"]
+    - new_array
+    - ["store", "r"]
+    - ["load", "min"]
+    - ["load", "max"]
+    - ["jmpgt", 9]
+    - ["load", "r"]
+    - return
+    - ["load", "r"]
+    - ["load", "index"]
+    - ["load", "min"]
+    - array_set
+    - ["load", "min"]
+    - inc
+    - ["store", "min"]
+    - ["load", "index"]
+    - inc
+    - ["store", "index"]
+    - ["jmp", 4]
+
+even_odd:
+  params:
+    values: array
+  vars:
+    bins: hash
+    index: number
+  return: hash
+  code:
+    - ["push", 0]
+    - ["store", "index"]
+    - new_hash
+    - ["store", "bins"]
+    - ["load", "bins"]
+    - dup
+    - ["push", "even"]
+    - new_array
+    - hash_set
+    - ["push", "odd"]
+    - new_array
+    - hash_set
+
+    # Beginning of loop, 12
+    - ["load", "values"]
+    - size
+    - ["load", "index"]
+    - ["jmplt", 18]
+    - ["load", "bins"]
+    - return
+
+    # Loop body, 18
+    - ["load", "bins"]
+    - ["load", "values"]
+    - ["load", "index"]
+    - lookup
+    - ["push", 2]
+    - mod
+    - ["jmpz", 27]
+    - ["push", "odd"]
+    - ["jmp", 28]
+    - ["push", "even"]
+    - get
+    - ["load", "values"]
+    - ["load", "index"]
+    - lookup
+    - array_append
+
+    # Loop tail, 33
+    - ["load", "index"]
+    - inc
+    - ["store", "index"]
+    - ["jmp", 12]
