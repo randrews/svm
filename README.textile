@@ -1,8 +1,42 @@
+h1. SVM
+
+A (simple, small, stack-based, stupid) VM.
+
+I wrote this because I wanted something to use as a compilation target while I played with toy compilers, and because writing it was easier than understanding LLVM's documentation. I am not even kidding.
+
+Besides, I could get neither libjit nor llvmruby to build on OSX.
+
+h2. SVM design
+
+SVM is a stack-based machine where programs are organized into functions. Each function has:
+
+* a name
+* a return type
+* a set of parameters (named, with static types, can be empty)
+* a set of variables (named, with static types, can be empty)
+* a list of instructions
+
+SVM is strange in that there is no textual representation of its code. Eventually there will be a binary object file format, but for right now, code translates easily to YAML files. Most of the time you'll use  @SVM::Builder@ to write it anyway.
+
+h2. How to write an SVM function
+
+To start off with, make an instance of @SVM::Builder@ and give it a name:
+
+@b = SVM::Builder.new "square"@
+
+Our function will take a number and return its square, so let's set a return type and add a parameter:
+
+@b.return_type = :number@
+
+@b.param :n, :number@
+
+
+
 h2. Available instructions
 
 *How to read this:*
 
-*_name_*( _argument_ ) [ _data types_ ]: _description_
+*_name_* (_argument_) [_data types_]: _description_
 
 The descriptions use the standard terminology: the value at the top of the stack is x, the value beneath it is y, the one beneath that is z
 
