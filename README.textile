@@ -1,55 +1,63 @@
-Standard terminology: the value at the top of the stack is x, the value beneath it is y, the one beneath that is z
+h2. Available instructions
+
+*How to read this:*
+
+[/data types/] */name/(/argument/):* /description/
+
+The descriptions use the standard terminology: the value at the top of the stack is x, the value beneath it is y, the one beneath that is z
+
+All instructions take either zero or one argument. If an instruction assumes something about the state of the stack, that's listed in the /data types/ block.
 
 h3. Stack operations
 
-* *return:* Exit the function and return x
+* [x:anything] *return:* Exit the function and return x
 * *push(number):* Push the argument to the top of the stack
-* *dup:* Push x to the top of the stack (shallow copy)
-* *swap:* Swap x and y
+* [x:anything] *dup:* Push x to the top of the stack (shallow copy)
+* [y:anything x:anything] *swap:* Swap x and y
 
 h3. Variable operations
 
 * *load(name):* Look up the variable given by name from params/vars, and push its value
-* *store(name):* Store x into the param/var given by name
+* [x:anything] *store(name):* Store x into the param/var given by name
 
 h3. Arithmetic
 
-* *add:* Pop x and y, push x+y
-* *sub:* Pop x and y, push y-x
-* *mul:* Pop x and y, push x*y
-* *div:* Pop x and y, push y/x
-* *mod:* Pop x and y, push y%x
-* *dec:* Pop x, push x-1
-* *inc:* Pop x, push x+1
+* [y:number x:number] *add:* Pop x and y, push x+y
+* [y:number x:number] *sub:* Pop x and y, push y-x
+* [y:number x:number] *mul:* Pop x and y, push x*y
+* [y:number x:number] *div:* Pop x and y, push y/x
+* [y:number x:number] *mod:* Pop x and y, push y%x
+* [x:number] *dec:* Pop x, push x-1
+* [x:number] *inc:* Pop x, push x+1
 
 h3. Jumps
 
 Jump to the given address if the conditions match. Conditions only work on numeric values
 
 * *jmp(address):* Jump unconditionally
-* *jmplt(address):* Pop x and y, jump if x < y
-* *jmpgt(address):* Pop x and y, jump if x > y
-* *jmple(address):* Pop x and y, jump if x <= y
-* *jmpge(address):* Pop x and y, jump if x >= y
-* *jmpe(address):* Pop x and y, jump if x == y
-* *jmpne(address):* Pop x and y, jump if x != y
-* *jmpz(address):* Pop x, jump if x == 0
-* *jmpnz(address):* Pop x, jump if x != 0
+* [y:number x:number] *jmplt(address):* Pop x and y, jump if x < y
+* [y:number x:number] *jmpgt(address):* Pop x and y, jump if x > y
+* [y:number x:number] *jmple(address):* Pop x and y, jump if x <= y
+* [y:number x:number] *jmpge(address):* Pop x and y, jump if x >= y
+* [y:number x:number] *jmpe(address):* Pop x and y, jump if x == y
+* [y:number x:number] *jmpne(address):* Pop x and y, jump if x != y
+* [x:number] *jmpz(address):* Pop x, jump if x == 0
+* [x:number] *jmpnz(address):* Pop x, jump if x != 0
 
 h3. Array operations
 
 Arrays can hold any number of elements, and the elements don't have to be the same type
 
 * *anew:* Create a new array and push it on to the stack
-* *size:* Pop x, push the number of elements in it
-* *aget:* Pop x and y, push y[x]
-* *aset:* Pop x, y, and z, store x in z[y]
-* *apush:* Pop x and y, store x at the end of y
+* [x:array] *size:* Pop x, push the number of elements in it
+* [y:array x:number] *aget:* Pop x and y, push y[x]
+* [z:array y:number x:anything] *aset:* Pop x, y, and z, store x in z[y]
+* [y:array x:anything] *apush:* Pop x and y, store x at the end of y
 
 h3. Hash operations
 
 Hashes hold key/value pairs. Any types can be used as keys or values
 
 * *hnew:* Create a new hash and push it on to the stack
-* *hget:* Pop x and y, push y[x]
-* *hset:* Pop x, y, and z, store x in z[y]
+* [y:hash x:anything] *hget:* Pop x and y, push y[x]
+* [z:hash y:anything x:anything] *hset:* Pop x, y, and z, store x in z[y]
