@@ -30,7 +30,12 @@ Our function will take a number and return its square, so let's set a return typ
 
 @b.param :n, :number@
 
+Now, time to start coding. We'll load the parameter on to the stack, duplicate it, then multiply the two copies. Finally, we'll return (every function must explicitly return) which returns the value on top of the stack:
 
+bc. b.load :n
+b.dup
+b.mul
+b.return
 
 h2. Available instructions
 
