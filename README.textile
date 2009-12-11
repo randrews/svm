@@ -48,7 +48,7 @@ h3. A more complex example
 We'll make a function that takes an array of numbers and returns the total. Start by making another builder:
 
 bc. b = SVM::Builder.new "total"
-b.return_type :number
+b.return_type = :number
 b.param :a, :array
 
 This time we'll also add variables to store the index in the array, and the running total:

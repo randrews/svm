@@ -63,12 +63,10 @@ class SVM::Builder
   ##################################################
 
   # No-argument opcodes
-  %w{add sub mul div mod
-       new_array new_hash
+  %w{add sub mul div mod inc dec
        dup return
-       inc dec
-       size lookup array_set array_append
-       hash_set get}.each do |opcode|
+       anew size aget aset apush
+       hnew hset hget}.each do |opcode|
     send :define_method, opcode.to_sym do
       @code << opcode.to_sym
     end
@@ -88,7 +86,7 @@ class SVM::Builder
   end
 
   # Kinds of jump
-  %w{jmp jmpz jmplt jmple jmpgt jmpge}.each do |opcode|
+  %w{jmp jmpz jmpnz jmplt jmple jmpgt jmpge jmpeq jmpne}.each do |opcode|
     send :define_method, opcode.to_sym do |address|
       @code << if address.is_a? Numeric # Normal constant jump
                  [opcode.to_sym, address]

@@ -100,4 +100,50 @@ describe "SVM::Builder" do
     # Error because of no return type
     lambda{ b.function }.should raise_error SVM::Error
   end
+
+  it "should let me build a simple example function" do
+    b = SVM::Builder.new "square"
+    b.return_type = :number
+    b.param :n, :number
+    b.load :n
+    b.dup
+    b.mul
+    b.return
+
+    func = b.function
+    func.apply({:n => 9}).should === 81
+  end
+
+  it "should let me build a complex example function" do
+    # Example from the readme, because it would be embarrassing if this didn't work
+
+    b = SVM::Builder.new "total"
+    b.return_type = :number
+    b.param :a, :array
+    b.var :index, :number
+    b.var :total, :number
+    b.push 0
+    b.store :index
+    b.push 0
+    b.store :total
+    b[:header].load :a
+    b.size
+    b.load :index
+    b.jmplt :body
+    b.load :total
+    b.return
+    b[:body].load :a
+    b.load :index
+    b.aget # Now the stack contains a[index]
+    b.load :total
+    b.add # Now the stack has total, with the next value added in
+    b.store :total # . . . Which we store back in total
+    b.load :index
+    b.inc
+    b.store :index
+    b.jmp :header
+
+    func = b.function
+    func.apply(:a=>[1, 3, 5, 7, 9]).should == 25
+  end
 end
