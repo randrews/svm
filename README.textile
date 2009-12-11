@@ -107,7 +107,7 @@ h2. Available instructions
 
 *How to read this:*
 
-*_name_*(_argument_) [_data types_]: _description_
+*_name_* ( _argument_ ) [ _data types_ ]: _description_
 
 The descriptions use the standard terminology: the value at the top of the stack is x, the value beneath it is y, the one beneath that is z
 
