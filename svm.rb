@@ -90,10 +90,10 @@ module SVM
           locals[name] = a
 
           when :jmplt
-          a = stack.pop
-          b = stack.pop
-          check_numeric a, b, op[1]
-          if a<b
+          x = stack.pop
+          y = stack.pop
+          check_numeric x, y, op[1]
+          if x<y
             inc = false
             pc = op[1]
           end
