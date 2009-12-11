@@ -20,15 +20,16 @@ SVM is strange in that there is no textual representation of its code. Eventuall
 
 h2. How to write an SVM function
 
+h3. A simple example:
+
 To start off with, make an instance of @SVM::Builder@ and give it a name:
 
-@b = SVM::Builder.new "square"@
+bc. b = SVM::Builder.new "square"
 
 Our function will take a number and return its square, so let's set a return type and add a parameter:
 
-@b.return_type = :number@
-
-@b.param :n, :number@
+bc. b.return_type = :number
+b.param :n, :number
 
 Now, time to start coding. We'll load the parameter on to the stack, duplicate it, then multiply the two copies. Finally, we'll return (every function must explicitly return) which returns the value on top of the stack:
 
@@ -37,11 +38,76 @@ b.dup
 b.mul
 b.return
 
+Our function is finished, so let's run it. First, get an @SVM::Function@ object out of the builder, then apply it to some parameters:
+
+bc. func = b.function
+func.apply({:n => 9}) # ==> 81
+
+h3. A more complex example
+
+We'll make a function that takes an array of numbers and returns the total. Start by making another builder:
+
+bc. b = SVM::Builder.new "total"
+b.return_type :number
+b.param :a, :array
+
+This time we'll also add variables to store the index in the array, and the running total:
+
+bc. b.var :index, :number
+b.var :total, :number
+
+Start off by initializing both variables:
+
+bc. b.push 0
+b.store :index
+b.push 0
+b.store :total
+
+Now, a loop. SVM has very basic support for control structures, just conditional jumps. So, we're going to do this:
+
+* Load up the current index and the array size
+* If the index is less than the size, then jump into the loop body
+* Otherwise, load the total and return
+* After the loop body, jump back to the loop header
+
+So, we're going to need some labels to jump to. @SVM::Builder@ makes it easy to calculate jump targets, adding @builder[:labelname]@ puts a label at the next instruction added. So, here's our loop header: 
+
+bc. b[:header].load :a
+b.size
+b.load :index
+b.jmplt :body
+
+That jump will jump to the label @:body@, once we define such a label. First, we have to return the total:
+
+bc. b.load :total
+b.return
+
+Now, the loop body. We need to load the value at @a[index]@, add it to @total@, and store the result back into @total@
+
+bc. b[:body].load :a
+b.load :index
+b.aget # Now the stack contains a[index]
+b.load :total
+b.add # Now the stack has total, with the next value added in
+b.store :total # . . . Which we store back in total
+
+Finally, let's increment index, and jump back to the header:
+
+bc. b.load :index
+b.inc
+b.store :index
+b.jmp :header
+
+And we're done! Let's try it out:
+
+bc. func = b.function
+func.apply(:a=>[1, 3, 5, 7, 9]) # ==> 25
+
 h2. Available instructions
 
 *How to read this:*
 
-*_name_* (_argument_) [_data types_]: _description_
+*_name_*(_argument_) [_data types_]: _description_
 
 The descriptions use the standard terminology: the value at the top of the stack is x, the value beneath it is y, the one beneath that is z
 
